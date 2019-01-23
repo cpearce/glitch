@@ -14,6 +14,7 @@ static ID2D1DCRenderTarget* sRenderTarget = nullptr;
 static ID2D1Factory* sD2DFactory = nullptr;
 static ID2D1SolidColorBrush* sBlueBrush = nullptr;
 static ID2D1SolidColorBrush* sRedBrush = nullptr;
+static ID2D1SolidColorBrush* sYellowBrush = nullptr;
 
 // Should this not be static?
 static PAINTSTRUCT sPaintStruct;
@@ -61,6 +62,41 @@ static void OnPaint(HWND hwnd, WPARAM wParam, LPARAM lParam) {
       sRenderTarget->FillRectangle(&bounds, brush);
     }
   }
+
+  const int cornerBoxSize = 100;
+  {
+    D2D1_RECT_F bounds = D2D1::RectF(FLOAT(10),
+                                      FLOAT(10),
+                                      FLOAT(10 + cornerBoxSize),
+                                      FLOAT(10 + cornerBoxSize));
+    sRenderTarget->FillRectangle(&bounds, sYellowBrush);
+  }
+
+  {
+    D2D1_RECT_F bounds = D2D1::RectF(FLOAT(width - 10 - cornerBoxSize),
+                                     FLOAT(10),
+                                     FLOAT(width - 10),
+                                     FLOAT(10 + cornerBoxSize));
+    sRenderTarget->FillRectangle(&bounds, sYellowBrush);
+  }
+
+  {
+    D2D1_RECT_F bounds = D2D1::RectF(FLOAT(10),
+                                      FLOAT(height - 10 - cornerBoxSize),
+                                      FLOAT(10 + cornerBoxSize),
+                                      FLOAT(height - 10));
+    sRenderTarget->FillRectangle(&bounds, sYellowBrush);
+  }
+
+  {
+    D2D1_RECT_F bounds = D2D1::RectF(FLOAT(width - 10 - cornerBoxSize),
+                                     FLOAT(height - 10 - cornerBoxSize),
+                                     FLOAT(width - 10),
+                                     FLOAT(height - 10));
+    sRenderTarget->FillRectangle(&bounds, sYellowBrush);
+  }
+
+
 
   if (sRenderTarget->EndDraw() == D2DERR_RECREATE_TARGET) {
     ErrorExit("EndDraw() returned D2DERR_RECREATE_TARGET");
@@ -190,6 +226,14 @@ void InitD2D(HWND hwnd)
   hr = sRenderTarget->CreateSolidColorBrush(
     D2D1::ColorF(D2D1::ColorF::Red),
     &sRedBrush);
+  if (FAILED(hr)) {
+    ErrorExit("CreateSolidColorBrush (red) failed");
+  }
+
+  
+  hr = sRenderTarget->CreateSolidColorBrush(
+    D2D1::ColorF(D2D1::ColorF::White),
+    &sYellowBrush);
   if (FAILED(hr)) {
     ErrorExit("CreateSolidColorBrush (red) failed");
   }
